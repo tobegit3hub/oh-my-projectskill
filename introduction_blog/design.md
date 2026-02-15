@@ -1,0 +1,7 @@
+# 设计思路
+
+参考nanoclaw项目，提供了一个项目级别的setup skill，由于部署nanoclaw依赖安装一堆npm包，因此setup skill可以把安装文档做成skill让用户直接执行。同时安装时用户可以选择配置docker或者apple container，因此在skill中增加命令让agent来检查用户环境，并且通过反问用户来确定安装选项，以及安装后的测试验证脚本和查日志命令都可以让agent来执行和检查。
+
+
+
+
