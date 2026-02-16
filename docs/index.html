@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>oh-my-projectskill — Turn Installation Docs into Agent Skills</title>
+    <meta name="description" content="A project-level Agent Skill template that transforms setup documentation into executable AI-driven workflows for Claude Code.">
+    <style>
+        :root {
+            --bg: #0d1117;
+            --surface: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-secondary: #8b949e;
+            --accent: #58a6ff;
+            --accent-dim: #1f6feb;
+            --green: #3fb950;
+            --purple: #bc8cff;
+            --orange: #f0883e;
+            --red: #f85149;
+            --code-bg: #1c2128;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(13, 17, 23, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+            padding: 0 24px;
+        }
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+        }
+        .nav-logo {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-logo:hover { text-decoration: none; }
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+        .nav-links a {
+            color: var(--text-secondary);
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover {
+            color: var(--text);
+            text-decoration: none;
+        }
+        .gh-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--text) !important;
+            transition: border-color 0.2s;
+        }
+        .gh-link:hover {
+            border-color: var(--text-secondary);
+            text-decoration: none;
+        }
+
+        /* Hero */
+        .hero {
+            padding: 140px 24px 80px;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .hero-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+        .hero h1 {
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--text), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 640px;
+            margin: 0 auto 36px;
+            line-height: 1.7;
+        }
+        .hero-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: var(--accent-dim);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: var(--accent);
+            text-decoration: none;
+        }
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        .btn-secondary:hover {
+            border-color: var(--text-secondary);
+            text-decoration: none;
+        }
+
+        /* Terminal demo */
+        .terminal-demo {
+            max-width: 680px;
+            margin: 48px auto 0;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            text-align: left;
+        }
+        .terminal-bar {
+            padding: 10px 16px;
+            background: var(--code-bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--border);
+        }
+        .terminal-dot.red { background: var(--red); }
+        .terminal-dot.yellow { background: var(--orange); }
+        .terminal-dot.green { background: var(--green); }
+        .terminal-body {
+            padding: 20px;
+            font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+        .terminal-body .prompt {
+            color: var(--green);
+        }
+        .terminal-body .agent {
+            color: var(--purple);
+        }
+        .terminal-body .user-input {
+            color: var(--text);
+        }
+        .terminal-body .dim {
+            color: var(--text-secondary);
+        }
+
+        /* Sections */
+        section {
+            padding: 80px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 56px;
+        }
+        .section-header h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .section-header p {
+            color: var(--text-secondary);
+            font-size: 17px;
+            max-width: 560px;
+            margin: 0 auto;
+        }
+
+        /* Problem section */
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .problem-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 28px;
+        }
+        .problem-card h3 {
+            font-size: 17px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .problem-card p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        .problem-card.highlight {
+            border-color: var(--accent-dim);
+            background: linear-gradient(135deg, rgba(31, 111, 235, 0.08), rgba(188, 140, 255, 0.05));
+        }
+
+        /* Capabilities */
+        .capabilities-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .cap-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 28px;
+            transition: border-color 0.2s;
+        }
+        .cap-card:hover {
+            border-color: var(--text-secondary);
+        }
+        .cap-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 16px;
+        }
+        .cap-card h3 {
+            font-size: 17px;
+            margin-bottom: 8px;
+        }
+        .cap-card p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .cap-card code {
+            background: var(--code-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: monospace;
+        }
+
+        /* Comparison table */
+        .comparison-wrapper {
+            overflow-x: auto;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        .comparison-table th,
+        .comparison-table td {
+            padding: 14px 18px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        .comparison-table th {
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: var(--surface);
+        }
+        .comparison-table td:first-child {
+            font-weight: 600;
+            color: var(--text);
+        }
+        .comparison-table td {
+            color: var(--text-secondary);
+        }
+        .comparison-table td:last-child {
+            color: var(--green);
+        }
+        .comparison-table tr:hover td {
+            background: rgba(22, 27, 34, 0.6);
+        }
+
+        /* Code example */
+        .code-example {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .code-block {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .code-header {
+            padding: 10px 16px;
+            background: var(--code-bg);
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-family: monospace;
+        }
+        .code-content {
+            padding: 20px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            overflow-x: auto;
+        }
+        .code-content .kw { color: var(--red); }
+        .code-content .str { color: var(--green); }
+        .code-content .cm { color: var(--text-secondary); }
+        .code-content .fn { color: var(--purple); }
+        .code-content .tag { color: var(--accent); }
+
+        /* Use cases */
+        .usecases-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        .usecase-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 24px;
+            transition: border-color 0.2s;
+        }
+        .usecase-card:hover {
+            border-color: var(--text-secondary);
+        }
+        .usecase-card .cmd {
+            font-family: monospace;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+        .usecase-card p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Getting started */
+        .steps {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .step {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        .step-num {
+            flex-shrink: 0;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--accent-dim);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .step-content h3 {
+            font-size: 16px;
+            margin-bottom: 6px;
+        }
+        .step-content p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        .step-content code {
+            background: var(--code-bg);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 13px;
+        }
+
+        /* Principles */
+        .principles-list {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .principle {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px 24px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+        .principle-num {
+            flex-shrink: 0;
+            color: var(--accent);
+            font-weight: 700;
+            font-family: monospace;
+            font-size: 14px;
+            padding-top: 2px;
+        }
+        .principle h4 {
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+        .principle p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 40px 24px;
+            text-align: center;
+        }
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .problem-grid,
+            .capabilities-grid,
+            .usecases-grid {
+                grid-template-columns: 1fr;
+            }
+            .nav-links a:not(.gh-link) {
+                display: none;
+            }
+            .hero {
+                padding: 120px 20px 60px;
+            }
+            section {
+                padding: 60px 20px;
+            }
+        }
+        @media (max-width: 1024px) {
+            .problem-grid { grid-template-columns: 1fr; }
+            .usecases-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav>
+    <div class="nav-inner">
+        <a href="#" class="nav-logo">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+            oh-my-projectskill
+        </a>
+        <div class="nav-links">
+            <a href="#capabilities">Capabilities</a>
+            <a href="#comparison">Comparison</a>
+            <a href="#use-cases">Use Cases</a>
+            <a href="#get-started">Get Started</a>
+            <a href="https://github.com/tobegit3hub/oh-my-projectskill" class="gh-link">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                GitHub
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="hero-badge">Project-Level Agent Skills for Claude Code</div>
+    <h1>Turn Your Installation Docs into Agent Skills</h1>
+    <p>
+        A template for encoding project setup, configuration, and deployment workflows
+        into Skill files that Claude Code can understand and execute &mdash; letting the AI agent
+        handle tedious environment configuration on your behalf.
+    </p>
+    <div class="hero-actions">
+        <a href="#get-started" class="btn btn-primary">Get Started</a>
+        <a href="https://github.com/tobegit3hub/oh-my-projectskill" class="btn btn-secondary">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            View on GitHub
+        </a>
+    </div>
+
+    <!-- Terminal Demo -->
+    <div class="terminal-demo">
+        <div class="terminal-bar">
+            <span class="terminal-dot red"></span>
+            <span class="terminal-dot yellow"></span>
+            <span class="terminal-dot green"></span>
+        </div>
+        <div class="terminal-body">
+            <div><span class="prompt">user&gt;</span> <span class="user-input">Help me set up this project</span></div>
+            <div><span class="agent">agent&gt;</span> <span class="dim">I'll run the setup skill. Let me check your environment first...</span></div>
+            <div><span class="agent">agent&gt;</span> <span class="dim">Detected macOS with Docker installed. Would you like to use Docker or install Apple Container?</span></div>
+            <div><span class="prompt">user&gt;</span> <span class="user-input">Docker</span></div>
+            <div><span class="agent">agent&gt;</span> <span class="dim">Got it, using Docker. Installing dependencies now...</span></div>
+            <div><span class="agent">agent&gt;</span> <span class="dim">All steps verified. Project is ready to use.</span></div>
+        </div>
+    </div>
+</section>
+
+<!-- Problem -->
+<section id="problem">
+    <div class="section-header">
+        <h2>The Problem</h2>
+        <p>Every project has an "installation bible" &mdash; and every approach has tradeoffs</p>
+    </div>
+    <div class="problem-grid">
+        <div class="problem-card">
+            <h3>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                README Docs
+            </h3>
+            <p>Readable, but users must manually follow each step, copy-paste commands, handle errors on their own, and make environment judgments without guidance.</p>
+        </div>
+        <div class="problem-card">
+            <h3>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                Shell Scripts
+            </h3>
+            <p>Executable, but rigid. They break down when user choices are needed and have limited ability to adapt to different environments or troubleshoot failures.</p>
+        </div>
+        <div class="problem-card highlight">
+            <h3>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                ProjectSkill
+            </h3>
+            <p>The best of both worlds. Readable Markdown format, agent-executed, interactive when needed, environment-aware, and with built-in troubleshooting.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Capabilities -->
+<section id="capabilities">
+    <div class="section-header">
+        <h2>Four Core Capabilities</h2>
+        <p>What makes a ProjectSkill more powerful than docs or scripts</p>
+    </div>
+    <div class="capabilities-grid">
+        <div class="cap-card">
+            <div class="cap-icon" style="background: rgba(63, 185, 80, 0.12); color: var(--green);">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
+            <h3>Environment Detection</h3>
+            <p>Run commands to check the OS, installed tools, versions, and runtime state. The agent never assumes &mdash; it detects first, then acts.</p>
+        </div>
+        <div class="cap-card">
+            <div class="cap-icon" style="background: rgba(188, 140, 255, 0.12); color: var(--purple);">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <h3>Interactive Decisions</h3>
+            <p>Use <code>AskUserQuestion</code> to present structured choices when user input is needed &mdash; not plain text, but real interactive prompts.</p>
+        </div>
+        <div class="cap-card">
+            <div class="cap-icon" style="background: rgba(240, 136, 62, 0.12); color: var(--orange);">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+            </div>
+            <h3>Conditional Branching</h3>
+            <p>Automatically take different installation paths based on detection results and user choices. One Skill handles every environment.</p>
+        </div>
+        <div class="cap-card">
+            <div class="cap-icon" style="background: rgba(88, 166, 255, 0.12); color: var(--accent);">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <h3>Verification &amp; Feedback</h3>
+            <p>Validate each step with verification commands. On failure, the agent enters troubleshooting mode automatically.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Comparison -->
+<section id="comparison">
+    <div class="section-header">
+        <h2>How It Compares</h2>
+        <p>ProjectSkill combines the strengths of documentation and automation</p>
+    </div>
+    <div class="comparison-wrapper">
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Dimension</th>
+                    <th>README Docs</th>
+                    <th>Shell Scripts</th>
+                    <th>ProjectSkill</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Readability</td>
+                    <td>Good</td>
+                    <td>Fair</td>
+                    <td>Good (Markdown)</td>
+                </tr>
+                <tr>
+                    <td>Executability</td>
+                    <td>Manual copy-paste</td>
+                    <td>Direct execution</td>
+                    <td>Agent auto-executes</td>
+                </tr>
+                <tr>
+                    <td>Interactivity</td>
+                    <td>None</td>
+                    <td>Limited (read/select)</td>
+                    <td>Natural language dialogue</td>
+                </tr>
+                <tr>
+                    <td>Environment Adaptation</td>
+                    <td>User must judge</td>
+                    <td>Limited conditionals</td>
+                    <td>Agent intelligently detects</td>
+                </tr>
+                <tr>
+                    <td>Error Handling</td>
+                    <td>Relies on user</td>
+                    <td>Fixed error handling</td>
+                    <td>Agent dynamically troubleshoots</td>
+                </tr>
+                <tr>
+                    <td>Maintenance Cost</td>
+                    <td>Low</td>
+                    <td>Medium</td>
+                    <td>Low (written in Markdown)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- Skill Template -->
+<section id="template">
+    <div class="section-header">
+        <h2>Skill Template Structure</h2>
+        <p>A ProjectSkill is just a Markdown file with a clear structure</p>
+    </div>
+    <div class="code-example">
+        <div class="code-block">
+            <div class="code-header">skills/setup/SKILL.md</div>
+            <div class="code-content">
+<pre><span class="cm">---</span>
+<span class="tag">name</span>: <span class="str">setup</span>
+<span class="tag">description</span>: <span class="str">Run initial project setup and configuration</span>
+<span class="cm">---</span>
+
+<span class="kw"># Project Setup</span>
+
+<span class="fn">Run all commands automatically.</span>
+<span class="fn">Only pause when user action is required.</span>
+
+<span class="kw">## 1. Check Prerequisites</span>
+<span class="cm">(Environment detection &mdash; detect OS, tools, versions)</span>
+
+<span class="kw">## 2. Install Dependencies</span>
+<span class="cm">(Dependency installation with verification)</span>
+
+<span class="kw">## 3. Configure Environment</span>
+<span class="cm">(Configuration with user interaction via AskUserQuestion)</span>
+
+<span class="kw">## 4. Build &amp; Deploy</span>
+<span class="cm">(Build and deployment steps)</span>
+
+<span class="kw">## 5. Verify</span>
+<span class="cm">(Run verification tests)</span>
+
+<span class="kw">## Troubleshooting</span>
+<span class="cm">(Common issues and automatic fixes)</span></pre>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Use Cases -->
+<section id="use-cases">
+    <div class="section-header">
+        <h2>Beyond Setup</h2>
+        <p>The ProjectSkill pattern extends to many project workflows</p>
+    </div>
+    <div class="usecases-grid">
+        <div class="usecase-card">
+            <div class="cmd">/setup</div>
+            <p>Project installation and configuration with environment detection and interactive choices.</p>
+        </div>
+        <div class="usecase-card">
+            <div class="cmd">/diagnose</div>
+            <p>Project health checks and automated issue detection with troubleshooting guidance.</p>
+        </div>
+        <div class="usecase-card">
+            <div class="cmd">/deploy</div>
+            <p>Deployment workflows with interactive confirmation and environment-specific paths.</p>
+        </div>
+        <div class="usecase-card">
+            <div class="cmd">/migrate</div>
+            <p>Database migrations or version upgrades with step-by-step verification.</p>
+        </div>
+        <div class="usecase-card">
+            <div class="cmd">/onboard</div>
+            <p>New team member onboarding with architecture walkthroughs and dev environment setup.</p>
+        </div>
+        <div class="usecase-card">
+            <div class="cmd">/release</div>
+            <p>Release process including changelog generation, version bumps, and tag creation.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Design Principles -->
+<section id="principles">
+    <div class="section-header">
+        <h2>Design Principles</h2>
+        <p>Guidelines for writing effective ProjectSkills</p>
+    </div>
+    <div class="principles-list">
+        <div class="principle">
+            <span class="principle-num">01</span>
+            <div>
+                <h4>Auto-execute, pause only when necessary</h4>
+                <p>The agent runs commands automatically, stopping only when real user action is required &mdash; like scanning a QR code or choosing an architecture option.</p>
+            </div>
+        </div>
+        <div class="principle">
+            <span class="principle-num">02</span>
+            <div>
+                <h4>Environment awareness</h4>
+                <p>Never assume the user's environment. Detect the OS, check installed tools, and verify versions before acting.</p>
+            </div>
+        </div>
+        <div class="principle">
+            <span class="principle-num">03</span>
+            <div>
+                <h4>Structured interaction</h4>
+                <p>When user input is needed, use Claude Code's AskUserQuestion tool for structured options instead of plain text prompts.</p>
+            </div>
+        </div>
+        <div class="principle">
+            <span class="principle-num">04</span>
+            <div>
+                <h4>Verify every step</h4>
+                <p>Follow each installation step with a verification command to confirm success before moving on to the next step.</p>
+            </div>
+        </div>
+        <div class="principle">
+            <span class="principle-num">05</span>
+            <div>
+                <h4>Built-in troubleshooting</h4>
+                <p>Include common problems and their fixes directly in the Skill, so the agent can attempt automatic recovery when errors occur.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Getting Started -->
+<section id="get-started">
+    <div class="section-header">
+        <h2>Getting Started</h2>
+        <p>Add a ProjectSkill to your project in three steps</p>
+    </div>
+    <div class="steps">
+        <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+                <h3>Create the skills directory</h3>
+                <p>Create a <code>skills/setup/</code> or <code>.claude/skills/</code> directory in your project root.</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+                <h3>Write your SKILL.md</h3>
+                <p>Use the template structure above, tailored to your project's setup process. Include environment detection, interactive choices, verification steps, and troubleshooting.</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+                <h3>Users just ask the agent</h3>
+                <p>After cloning, users tell Claude Code: <code>"Help me set up this project"</code> &mdash; and the agent handles the rest.</p>
+            </div>
+        </div>
+    </div>
+    <div style="text-align: center; margin-top: 40px;">
+        <a href="https://github.com/tobegit3hub/oh-my-projectskill" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            View on GitHub
+        </a>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-inner">
+        <div class="footer-links">
+            <a href="https://github.com/tobegit3hub/oh-my-projectskill">GitHub</a>
+            <a href="https://github.com/tobegit3hub/oh-my-projectskill/blob/main/LICENSE">Apache 2.0 License</a>
+            <a href="https://github.com/tobegit3hub/oh-my-projectskill/tree/main/skills/setup/SKILL.md">Starter Template</a>
+        </div>
+        <p>oh-my-projectskill &mdash; Turn your installation docs into Agent Skills</p>
+    </div>
+</footer>
+
+<!-- Smooth scroll -->
+<script>
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+});
+</script>
+
+</body>
+</html>
